@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Static Tabs w/ External Content</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+
+    <link rel='stylesheet prefetch'
+          href='https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.0-rc.5/angular-material.css'>
+    <link rel='stylesheet prefetch' href='https://material.angularjs.org/1.1.0-rc.5/docs.css'>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/angular-data-grid.material.css">
+
+</head>
+
+<body>
+<div ng-controller="AppCtrl" ng-cloak="" class="tabsdemoStaticTabs" ng-app="MyApp">
+    <md-content class="md-padding">
+        <md-tabs class="md-accent" md-selected="data.selectedIndex" md-align-tabs="{{data.bottom ? 'bottom' : 'top'}}">
+            <md-tab id="tab1">
+                <md-tab-label>Item One</md-tab-label>
+            </md-tab>
+            <md-tab id="tab2">
+                <md-tab-label>{{data.secondLabel}}</md-tab-label>
+            </md-tab>
+            <md-tab id="tab3">
+                <md-tab-label>Item Three</md-tab-label>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+
+    <ng-switch on="data.selectedIndex" class="tabpanel-container">
+        <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" md-swipe-left="next()"
+             md-swipe-right="previous()">
+
+            <div layout-gt-xs="row" layout-xs="column" layout-align="stretch center">
+
+            </div>
+            <div grid-data id='test' grid-options="gridOptions" grid-actions="gridActions">
+                <div layout-gt-sm="row" layout-sm="column" layout-align="center">
+                    <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                        <span>{{filtered.length}} items total</span>
+                    </div>
+                    <div flex-gt-sm="75" flex-xs="100">
+                        <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
+                            <grid-pagination max-size="5"
+                                             boundary-links="true"
+                                             class="pagination mdl-shadow--2dp"
+                                             ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage"
+                                             total-items="paginationOptions.totalItems"
+                                             ng-model="paginationOptions.currentPage"
+                                             ng-change="reloadGrid()"
+                                             items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+                        <thead>
+                        <tr>
+                            <th sortable="address.street" class="sortable mdl-data-table__cell--non-numeric">
+                                <span>Street</span>
+                            </th>
+                            <th sortable="address.city" class="sortable">
+                                <span>City</span>
+                            </th>
+                            <th sortable="distance">
+                                <span>Distance</span>
+                            </th>
+                            <th sortable='type' class="sortable">
+                                <span>Type</span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr grid-item>
+                            <td class="mdl-data-table__cell--non-numeric">
+                                <span ng-bind="item.address.street"></span>
+                            </td>
+                            <td ng-bind="item.address.city"></td>
+                            <td ng-bind="item.distance"></td>
+                            <td ng-bind="item.type"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
+                    <grid-pagination max-size="5"
+                                     boundary-links="true"
+                                     class="pagination"
+                                     ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage"
+                                     total-items="paginationOptions.totalItems"
+                                     ng-model="paginationOptions.currentPage"
+                                     ng-change="reloadGrid()"
+                                     items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
+                </div>
+            </div>
+            <hr>
+
+        </div>
+        <div role="tabpanel" id="tab2-content" aria-labelledby="tab2" ng-switch-when="1" md-swipe-left="next()"
+             md-swipe-right="previous()">
+            View for {{data.secondLabel}}<br/> data.selectedIndex = 1
+        </div>
+        <div role="tabpanel" id="tab3-content" aria-labelledby="tab3" ng-switch-when="2" md-swipe-left="next()"
+             md-swipe-right="previous()">
+            View for Item #3<br/> data.selectedIndex = 2
+        </div>
+    </ng-switch>
+</div>
+    <!--
+  Copyright 2016 Google Inc. All Rights Reserved.
+  Use of this source code is governed by an MIT-style license that can be in foundin the LICENSE file at http://material.angularjs.org/license.
+  -->
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js'></script>
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js'></script>
+    <script src='https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.0-rc.5/angular-material.js'></script>
+
+    <script src="js/index.js"></script>
+
+    <script src="dist/pagination.min.js"></script>
+    <script src="dist/dataGrid.min.js"></script>
+
+</body>
+</html>
