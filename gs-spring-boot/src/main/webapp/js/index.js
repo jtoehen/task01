@@ -5,6 +5,7 @@
       .module('MyApp',['ngMaterial', 'ngMessages', 'material.svgAssetsCache','dataGrid', 'pagination'])
       .controller('AppCtrl', ['$scope', 'myAppFactory', function ($scope, myAppFactory) {
 
+            $scope.error = false;
             $scope.data = {
                   selectedIndex: 0,
                   secondLocked:  true,
@@ -23,7 +24,16 @@
               urlSync: true
           };
           myAppFactory.getData().then(function (responseData) {
-              $scope.gridOptions.data = responseData.data;
+                if(!responseData.data.errorCode)
+                {
+                    $scope.gridOptions.data = responseData.data;
+                }
+                else
+                {
+                    $scope.error = true;
+                    $scope.message = responseData.data.message;
+                }
+
           });
 
       }])
@@ -32,7 +42,7 @@
               getData: function () {
                   return $http({
                       method: 'GET',
-                      url: 'http://localhost:8080/gs-spring-boot-0.1.0/spring/atm/'
+                      url: 'http://localhost:8080/hwangdbs/spring/atm/'
                   });
               }
           }

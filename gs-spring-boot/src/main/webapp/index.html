@@ -37,74 +37,79 @@
         <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" md-swipe-left="next()"
              md-swipe-right="previous()">
 
-            <div layout-gt-xs="row" layout-xs="column" layout-align="stretch center">
-
+            <div ng-show="error" class="ng-hide">
+                There is an error processing the request. {{ message }}
             </div>
-            <div grid-data id='test' grid-options="gridOptions" grid-actions="gridActions">
-                <div layout-gt-sm="row" layout-sm="column" layout-align="center">
-                    <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
-                        <span>{{filtered.length}} items total</span>
-                    </div>
-                    <div flex-gt-sm="75" flex-xs="100">
-                        <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
-                            <grid-pagination max-size="5"
-                                             boundary-links="true"
-                                             class="pagination mdl-shadow--2dp"
-                                             ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage"
-                                             total-items="paginationOptions.totalItems"
-                                             ng-model="paginationOptions.currentPage"
-                                             ng-change="reloadGrid()"
-                                             items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
+
+            <div ng-show="!error" class="ng-hide">
+
+
+                <div grid-data id='test' grid-options="gridOptions" grid-actions="gridActions">
+                    <div layout-gt-sm="row" layout-sm="column" layout-align="center">
+                        <div flex-gt-sm="25" flex-sm="100" layout="row" layout-align="start center">
+                            <span>{{filtered.length}} items total</span>
+                        </div>
+                        <div flex-gt-sm="75" flex-xs="100">
+                            <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
+                                <grid-pagination max-size="5"
+                                                 boundary-links="true"
+                                                 class="pagination mdl-shadow--2dp"
+                                                 ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage"
+                                                 total-items="paginationOptions.totalItems"
+                                                 ng-model="paginationOptions.currentPage"
+                                                 ng-change="reloadGrid()"
+                                                 items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
+                            </div>
                         </div>
                     </div>
+                    <div>
+                        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+                            <thead>
+                            <tr>
+                                <th sortable="address.street" class="sortable mdl-data-table__cell--non-numeric">
+                                    <span>Street</span>
+                                </th>
+                                <th sortable="address.city" class="sortable">
+                                    <span>City</span>
+                                </th>
+                                <th sortable="distance">
+                                    <span>Distance</span>
+                                </th>
+                                <th sortable='type' class="sortable">
+                                    <span>Type</span>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr grid-item>
+                                <td class="mdl-data-table__cell--non-numeric">
+                                    <span ng-bind="item.address.street"></span>
+                                </td>
+                                <td ng-bind="item.address.city"></td>
+                                <td ng-bind="item.distance"></td>
+                                <td ng-bind="item.type"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
+                        <grid-pagination max-size="5"
+                                         boundary-links="true"
+                                         class="pagination"
+                                         ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage"
+                                         total-items="paginationOptions.totalItems"
+                                         ng-model="paginationOptions.currentPage"
+                                         ng-change="reloadGrid()"
+                                         items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
+                    </div>
                 </div>
-                <div>
-                    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
-                        <thead>
-                        <tr>
-                            <th sortable="address.street" class="sortable mdl-data-table__cell--non-numeric">
-                                <span>Street</span>
-                            </th>
-                            <th sortable="address.city" class="sortable">
-                                <span>City</span>
-                            </th>
-                            <th sortable="distance">
-                                <span>Distance</span>
-                            </th>
-                            <th sortable='type' class="sortable">
-                                <span>Type</span>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr grid-item>
-                            <td class="mdl-data-table__cell--non-numeric">
-                                <span ng-bind="item.address.street"></span>
-                            </td>
-                            <td ng-bind="item.address.city"></td>
-                            <td ng-bind="item.distance"></td>
-                            <td ng-bind="item.type"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div layout-xs="column" layout="row" layout-align-xs="end end" layout-align="end center">
-                    <grid-pagination max-size="5"
-                                     boundary-links="true"
-                                     class="pagination"
-                                     ng-if="paginationOptions.totalItems  > paginationOptions.itemsPerPage"
-                                     total-items="paginationOptions.totalItems"
-                                     ng-model="paginationOptions.currentPage"
-                                     ng-change="reloadGrid()"
-                                     items-per-page="paginationOptions.itemsPerPage"></grid-pagination>
-                </div>
+
             </div>
-            <hr>
 
         </div>
         <div role="tabpanel" id="tab2-content" aria-labelledby="tab2" ng-switch-when="1" md-swipe-left="next()"
              md-swipe-right="previous()">
-            View for {{data.secondLabel}}<br/> data.selectedIndex = 1
+            <a href="http://localhost:9080/camel/atm?accept=application%2Fjson">this link</a>
         </div>
         <div role="tabpanel" id="tab3-content" aria-labelledby="tab3" ng-switch-when="2" md-swipe-left="next()"
              md-swipe-right="previous()">

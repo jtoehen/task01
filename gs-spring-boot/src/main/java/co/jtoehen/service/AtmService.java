@@ -1,14 +1,14 @@
 package co.jtoehen.service;
 
-import co.jtoehen.controller.AtmRestController;
 import co.jtoehen.model.Atm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.FluentProducerTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,22 +22,28 @@ public class AtmService
 {
     private static Logger log = LoggerFactory.getLogger(AtmService.class);
 
-    /**
-     * Inject Camel producer to use camel-http to request for the atm list.
-     */
-    @EndpointInject(uri = "https://www.ing.nl/api/locator/atms/")
-    private FluentProducerTemplate producer;
+    @Autowired
+    private RestTemplate template;
 
-    public List<Atm> getAtm() throws IOException
+    private ObjectMapper mapper;
+
+    public List<Atm> getAtm(String url) throws IOException, RestClientException
     {
-        // call Camel to get the list, the returned string is in JSon format
-        String where = producer.request(String.class);
+        String where = template.getForObject(url, String.class);
+
+        if(where == null)
+        {
+            throw new IOException("empty json returned from remote host.");
+        }
 
         // json string clean-up before parsing
-        where = where.replace(")]}',","");
+        if(where.indexOf(")]}',") != -1)
+        {
+            where = where.replace(")]}',","");
+        }
 
         List<Atm> list = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
 
         list = mapper.readValue(where, new TypeReference<List<Atm>>(){});
 

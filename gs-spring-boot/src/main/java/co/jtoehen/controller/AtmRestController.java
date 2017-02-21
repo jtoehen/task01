@@ -1,18 +1,15 @@
 package co.jtoehen.controller;
 
+import co.jtoehen.exception.AtmException;
+import co.jtoehen.exception.ErrorResponse;
 import co.jtoehen.model.Atm;
 import co.jtoehen.service.AtmService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.camel.BeanInject;
-import org.apache.camel.EndpointInject;
-import org.apache.camel.FluentProducerTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,10 +22,7 @@ import java.util.List;
 @RequestMapping("/spring")
 public class AtmRestController
 {
-
-    private static Logger log = LoggerFactory.getLogger(AtmRestController.class);
-
-    @BeanInject
+    @Autowired
     private AtmService service;
 
     /**
@@ -36,17 +30,15 @@ public class AtmRestController
      */
     @RequestMapping(method = RequestMethod.GET, value = "/atm/{location}",
                     produces = "application/json")
-    public String getAtm(@PathVariable("location") String location)
+    public ResponseEntity<List<Atm>> getAtm(@PathVariable("location") String location) throws AtmException
     {
-        log.info("get the atms.");
+        List<Atm> list = new ArrayList<>();
 
-        ObjectMapper mapper = new ObjectMapper();
-        String out = "";
         List<Atm> output = new ArrayList<>();
 
         try
         {
-            List<Atm> list = service.getAtm();
+            list = service.getAtm("https://www.ing.nl/api/locator/atms/");
 
             for(Atm atm : list)
             {
@@ -56,14 +48,13 @@ public class AtmRestController
                     output.add(atm);
                 }
             }
-            out = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(output);
         }
-        catch(IOException io)
+        catch(Exception e)
         {
-            log.error(io.getMessage());
+            throw new AtmException(e.getMessage());
         }
 
-        return out;
+        return new ResponseEntity<List<Atm>>(output, HttpStatus.OK);
     }
 
     /**
@@ -71,25 +62,29 @@ public class AtmRestController
      */
     @RequestMapping(method = RequestMethod.GET, value = "/atm/",
             produces = "application/json")
-    public String getAllAtm()
+    public ResponseEntity<List<Atm>> getAllAtm() throws AtmException
     {
-        log.info("get all the atms.");
-
-        ObjectMapper mapper = new ObjectMapper();
-        String out = "";
+        List<Atm> list = new ArrayList<>();
 
         try
         {
-            List<Atm> list = service.getAtm();
-
-            out = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(list);
+            list = service.getAtm("https://www.ing.nl/api/locator/atms/");
         }
-        catch(IOException io)
+        catch(Exception e)
         {
-            log.error(io.getMessage());
+            throw new AtmException(e.getMessage());
         }
 
-        return out;
+        return new ResponseEntity<List<Atm>>(list, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(AtmException.class)
+    public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex)
+    {
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode(HttpStatus.PRECONDITION_FAILED.value());
+        error.setMessage(ex.getMessage());
+        return new ResponseEntity<ErrorResponse>(error, HttpStatus.OK);
     }
 }
 
